@@ -23,7 +23,6 @@ from pyqtgraph import PlotWidget
 import sys
 import zmq
 import tomli
-from scipy import signal
 
 from daqopen.channelbuffer import AcqBufferPool
 from daqopen.daqzmq import DaqSubscriber
@@ -118,9 +117,7 @@ class GuiWithZmq(QMainWindow):
         self.daq_buffer = AcqBufferPool(daq_info=self.daq_sub.daq_info, 
                                         data_columns=self.daq_sub.data_columns,                                        
                                         start_timestamp_us=int(self.daq_sub.timestamp*1e6))
-        self.lp_filter = []
-        for i in self.daq_sub.data_columns:
-            self.lp_filter.append(LowpassFilter(self.daq_sub.daq_info.board.samplerate, 1000))
+        
         self.cb_channel_selector.clear()
         self.cb_channel_selector.addItems(self.daq_sub.daq_info.channel.keys())
         self.sample_count = 0
