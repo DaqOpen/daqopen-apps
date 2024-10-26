@@ -31,7 +31,7 @@ The daq-zmq-server.py is an application for decoupling the actual acquisition-pr
 
 Debugging and testing tool for the daq-zmq-server. You can subscribe to the daqopen-device and live view the data. Bases on PyQt6 framework. It uses also ChannelBuffer for demonstration.
 
-![image-20241026143034059](/home/moberhofer/Projekte/DaqOpen/daqopen-apps/resources/daq-zmq-viewer-0.png)
+![image-20241026143034059](resources/daq-zmq-viewer-0.png)
 
 ### Features
 
