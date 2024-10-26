@@ -1,0 +1,4 @@
+# This is the daq-zmq-viewer configuration
+[zmq_server]
+port=50001
+host="localhost"

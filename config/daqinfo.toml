@@ -1,0 +1,28 @@
+# This is a Arduino Due DAQ Configuration File
+[board]
+type = "duedaq" # mandatory
+samplerate = 10000 # mandatory, given in Hz
+differential = true # can be omitted, means differential = false (single ended)
+gain = "DIFF_05X" # can be omitted, fallback to SGL_1X
+
+# Definition of a channel with the name of the ai_pin itself
+[channel.A1]
+ai_pin = "A1" # can be omitted in case channel name == ai_pin
+gain = 1.0
+offset = 0.0
+delay = 0
+unit = "V"
+
+# Definition of another channel with the name "Another Channel"
+[channel."Another Channel"]
+ai_pin = "A3" # must be defined, because the channel name is not an ai_pin
+gain = 1.0
+offset = 0.0
+delay = 0
+unit = "V"
+
+# Application specific settings
+[app.zmq_server]
+daq_port = "SIM" # Use empty string for auto-find; SIM for simulation or /dev/ttyACM0 for definitive interface
+tcp_port = 50001
+bind_addr = "127.0.0.1" # Which interface to bind, use 0.0.0.0 for all interfaces

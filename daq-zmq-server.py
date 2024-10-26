@@ -1,25 +1,22 @@
 """
-App: daq-zmq.py
+App: daq-zmq-server.py
 Description: app for reading the data from daq and providing it via zmq
 
 Author: Michael Oberhofer
 Created on: 2024-03-13
-Last Updated: 2023-03-13
+Last Updated: 2024-10-26
 
 License: MIT
 
 Notes: 
 
-Version: 0.01
-Github: https://github.com/moberhofer/pqopen-device-software/daq-app/
+Version: 0.02
+Github: https://github.com/DaqOpen/daqopen-apps/
 """
 
 import tomllib
-import signal
-import sys
 import time
 import threading
-import zmq
 import logging
 # Import PQopen Specific Modules
 from daqopen.daqinfo import DaqInfo
