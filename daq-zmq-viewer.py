@@ -22,7 +22,7 @@ from PyQt6.QtGui import QIntValidator, QDoubleValidator
 from pyqtgraph import PlotWidget
 import sys
 import zmq
-import tomli
+import tomllib
 
 from daqopen.channelbuffer import AcqBufferPool
 from daqopen.daqzmq import DaqSubscriber
@@ -36,7 +36,7 @@ class GuiWithZmq(QMainWindow):
         super().__init__()
 
         with open("config/daq-zmq-viewer.toml", "rb") as f:
-            self.config = tomli.load(f)
+            self.config = tomllib.load(f)
 
         self.setWindowTitle("DAQ Test Application")
         self.setGeometry(100, 100, 800, 600)
