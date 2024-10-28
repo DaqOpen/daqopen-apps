@@ -40,7 +40,7 @@ myDaq = DueDaq(channels=daq_info.ai_pin_name.values(),
                differential=daq_info.board.differential,
                gain=daq_info.board.gain,
                serial_port_name=daq_config["app"]["zmq_server"]["daq_port"])
-daq_info.board.samplerate = myDaq.samplerate
+daq_info.board.samplerate = myDaq.samplerate * daq_info.board.adc_clock_gain
 
 # Initialize the daqzmq publisher
 daq_pub = DaqPublisher(daq_info=daq_info,
