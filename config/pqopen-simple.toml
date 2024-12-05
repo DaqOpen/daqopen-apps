@@ -1,0 +1,20 @@
+# This is the config for simple pqopen app
+[powersystem]
+nominal_frequency = 50.0
+zcd_channel = "U1"
+
+[powersystem.phase.1]
+u_channel = "U1"
+i_channel = "I1"
+
+[powersystem.phase.2]
+u_channel = "U2"
+i_channel = "I2"
+
+[powersystem.phase.3]
+u_channel = "U3"
+i_channel = "I3"
+
+[zmq_server]
+port=50001
+host="pqopen-0011"
