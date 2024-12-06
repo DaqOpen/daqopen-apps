@@ -2,12 +2,16 @@ import tomllib
 import time
 import zmq
 import uuid
+import logging
 
 from daqopen.channelbuffer import AcqBufferPool
 from daqopen.daqzmq import DaqSubscriber
 from daqopen.helper import GracefulKiller
 from pqopen.powersystem import PowerSystem
 from pqopen.storagecontroller import StorageController, StoragePlan, CsvStorageEndpoint
+
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 
 with open("config/pqopen-simple.toml", "rb") as f:
     config = tomllib.load(f)
@@ -54,6 +58,7 @@ storage_controller.add_storage_plan(csv_storage_plan)
 # Initialize Acq variables
 print_values_timestamp = time.time()
 last_print_values_acq_sidx = 0
+last_packet_number = None
 
 # Initialize ZMQ Publisher
 context = zmq.Context()
@@ -63,6 +68,11 @@ socket.bind("tcp://*:5555")  # An Port 5555 binden
 # Application Loop
 while not app_terminator.kill_now:
     m_data = daq_sub.recv_data()
+    if last_packet_number is None:
+        last_packet_number = daq_sub.packet_num
+    elif last_packet_number + 1 != daq_sub.packet_num:
+        logger.error("DAQ packet gap detected - stopping")
+        break
     daq_buffer.put_data_with_timestamp(m_data, int(daq_sub.timestamp*1e6))
     power_system.process()
     storage_controller.process()
