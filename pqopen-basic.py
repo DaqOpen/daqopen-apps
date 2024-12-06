@@ -71,8 +71,10 @@ while not app_terminator.kill_now:
     if last_packet_number is None:
         last_packet_number = daq_sub.packet_num
     elif last_packet_number + 1 != daq_sub.packet_num:
-        logger.error("DAQ packet gap detected - stopping")
+        logger.error(f"DAQ packet gap detected {last_packet_number:d}+1 != {daq_sub.packet_num:d} - stopping")
         break
+    else:
+        last_packet_number = daq_sub.packet_num
     daq_buffer.put_data_with_timestamp(m_data, int(daq_sub.timestamp*1e6))
     power_system.process()
     storage_controller.process()
