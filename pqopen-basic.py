@@ -3,18 +3,23 @@ import time
 import zmq
 import uuid
 import logging
+import os
+from pathlib import Path
 
 from daqopen.channelbuffer import AcqBufferPool
 from daqopen.daqzmq import DaqSubscriber
 from daqopen.helper import GracefulKiller
 from pqopen.powersystem import PowerSystem
-from pqopen.storagecontroller import StorageController, StoragePlan, CsvStorageEndpoint
+from pqopen.storagecontroller import StorageController
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
 with open("config/pqopen-simple.toml", "rb") as f:
     config = tomllib.load(f)
+
+device_id = os.getenv("DAQOPEN_DEVICE_ID", "00000000-0000-0000-0000-000000000000")
+mqtt_client_id = os.getenv("DAQOPEN_CLIENT_ID", "client_id_not_set")
 
 # Initialize App Killer
 app_terminator = GracefulKiller()
@@ -46,14 +51,13 @@ power_system.enable_fluctuation_calculation(nominal_voltage=230)
 
 # Initialize Storage Controller
 storage_controller = StorageController(time_channel=daq_buffer.time, sample_rate=daq_sub.daq_info.board.samplerate)
-csv_storage_endpoint = CsvStorageEndpoint("csv", measurement_id, "data")
-csv_storage_plan = StoragePlan(storage_endpoint=csv_storage_endpoint,
-                               start_timestamp_us=int(daq_sub.timestamp*1e6),
-                               interval_seconds=1)
-for channel in power_system.output_channels.values():
-    if len(channel._data.shape) == 1:
-        csv_storage_plan.add_channel(channel)
-storage_controller.add_storage_plan(csv_storage_plan)
+storage_controller.setup_endpoints_and_storageplans(endpoints=config["endpoint"],
+                                                    storage_plans=config["storageplan"],
+                                                    available_channels=power_system.output_channels,
+                                                    measurement_id=measurement_id,
+                                                    device_id=device_id,
+                                                    client_id=mqtt_client_id,
+                                                    start_timestamp_us=int(daq_sub.timestamp*1e6))
     
 # Initialize Acq variables
 print_values_timestamp = time.time()
@@ -78,3 +82,5 @@ while not app_terminator.kill_now:
     daq_buffer.put_data_with_timestamp(m_data, int(daq_sub.timestamp*1e6))
     power_system.process()
     storage_controller.process()
+
+print("Application Stopped")

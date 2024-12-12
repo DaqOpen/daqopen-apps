@@ -15,6 +15,22 @@ i_channel = "I2"
 u_channel = "U3"
 i_channel = "I3"
 
+[storageplan.csv_1s]
+endpoint = "csv"
+channels = []
+interval_sec = 1
+
+[storageplan.daqopenserver_10s]
+endpoint = "daqopen-server"
+channels = []
+interval_sec = 10
+
+[endpoint.csv]
+file_path = "/tmp/"
+
+[endpoint.daqopen-server]
+hostname = "localhost"
+
 [zmq_server]
 port=50001
 host="pqopen-0011"
