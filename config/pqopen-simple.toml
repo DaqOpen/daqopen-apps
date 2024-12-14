@@ -20,15 +20,15 @@ endpoint = "csv"
 channels = []
 interval_sec = 1
 
-[storageplan.daqopenserver_10s]
-endpoint = "daqopen-server"
+[storageplan.mqtt_10s]
+endpoint = "mqtt"
 channels = []
 interval_sec = 10
 
 [endpoint.csv]
 file_path = "/tmp/"
 
-[endpoint.daqopen-server]
+[endpoint.mqtt]
 hostname = "localhost"
 
 [zmq_server]
