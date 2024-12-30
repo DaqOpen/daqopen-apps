@@ -11,6 +11,7 @@ from daqopen.daqzmq import DaqSubscriber
 from daqopen.helper import GracefulKiller
 from pqopen.powersystem import PowerSystem
 from pqopen.storagecontroller import StorageController
+from pqopen.eventdetector import EventController, EventDetectorLevelLow, EventDetectorLevelHigh
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
@@ -58,10 +59,15 @@ storage_controller.setup_endpoints_and_storageplans(endpoints=config["endpoint"]
                                                     device_id=device_id,
                                                     client_id=mqtt_client_id,
                                                     start_timestamp_us=int(daq_sub.timestamp*1e6))
+
+# Initialize Event Controller
+event_controller = EventController(time_channel=daq_buffer.time, sample_rate=daq_sub.daq_info.board.samplerate)
+for ch_name in [f"U{idx+1:d}_1p_hp_rms" for idx in range(len(power_system._phases))]:
+    event_controller.add_event_detector(EventDetectorLevelLow(208, 2, power_system.output_channels[ch_name]))
+    event_controller.add_event_detector(EventDetectorLevelHigh(253, 2, power_system.output_channels[ch_name]))
     
 # Initialize Acq variables
 print_values_timestamp = time.time()
-last_print_values_acq_sidx = 0
 last_packet_number = None
 
 # Initialize ZMQ Publisher
@@ -81,6 +87,8 @@ while not app_terminator.kill_now:
         last_packet_number = daq_sub.packet_num
     daq_buffer.put_data_with_timestamp(m_data, int(daq_sub.timestamp*1e6))
     power_system.process()
+    events = event_controller.process()
     storage_controller.process()
+    storage_controller.process_events(events)
 
 print("Application Stopped")
