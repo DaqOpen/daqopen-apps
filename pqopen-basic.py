@@ -49,6 +49,8 @@ for phase_name, phase in config["powersystem"]["phase"].items():
 power_system.enable_harmonic_calculation()
 power_system.enable_nper_abs_time_sync(daq_buffer.time, interval_sec=10)
 power_system.enable_fluctuation_calculation(nominal_voltage=230)
+power_system.enable_mains_signaling_calculation(frequency=383)
+power_system.enable_under_over_deviation_calculation(u_din=230)
 
 # Initialize Storage Controller
 storage_controller = StorageController(time_channel=daq_buffer.time, sample_rate=daq_sub.daq_info.board.samplerate)
