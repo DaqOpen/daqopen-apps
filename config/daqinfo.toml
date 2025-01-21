@@ -15,6 +15,7 @@ unit = "V"
 
 # Definition of another channel with the name "Another Channel"
 [channel."Another Channel"]
+enabled=false # tempoary disable channel
 ai_pin = "A3" # must be defined, because the channel name is not an ai_pin
 gain = 1.0
 offset = 0.0
@@ -23,6 +24,6 @@ unit = "V"
 
 # Application specific settings
 [app.zmq_server]
-daq_port = "SIM" # Use empty string for auto-find; SIM for simulation or /dev/ttyACM0 for definitive interface
+daq_port = "" # Use empty string for auto-find; SIM for simulation or /dev/ttyACM0 for definitive interface
 tcp_port = 50001
 bind_addr = "127.0.0.1" # Which interface to bind, use 0.0.0.0 for all interfaces

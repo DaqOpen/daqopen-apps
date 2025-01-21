@@ -81,6 +81,7 @@ while not terminator.kill_now:
     except AcqNotRunningException:
         time.sleep(0.1)
     except DAQErrorException:
+        logger.error("DAQErrorException occured - stopping")
         break # Exit Application
 
     # Generate Timestamp
